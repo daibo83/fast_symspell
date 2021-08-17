@@ -783,7 +783,7 @@ impl<T: StringStrategy> SymSpell<T> {
         }
         true
     }
-
+///create dictionary entry with a word and its count
     pub fn create_dictionary_entry(&mut self, key: String, count: i64) -> bool {
         if count < self.count_threshold {
             return false;
