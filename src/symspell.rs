@@ -22,7 +22,7 @@ pub enum Verbosity {
     All,
 }
 
-#[derive(Clone, Builder, PartialEq)]
+#[derive(Debug, Clone, Builder, PartialEq)]
 pub struct SymSpell<T: StringStrategy> {
     /// Maximum edit distance for doing lookups.
     #[builder(default = "3")]
