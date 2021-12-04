@@ -12,7 +12,7 @@ pub trait StringStrategy: Clone + Default {
 }
 
 #[cfg(not(target_arch = "wasm32"))]
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct AsciiStringStrategy {}
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -62,7 +62,7 @@ impl StringStrategy for AsciiStringStrategy {
 // backward compatibility on typo
 pub type UnicodeiStringStrategy = UnicodeStringStrategy;
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct UnicodeStringStrategy {}
 
 impl Default for UnicodeStringStrategy {
