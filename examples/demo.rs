@@ -1,7 +1,7 @@
-extern crate symspell;
+extern crate fast_symspell;
 
 use std::time::Instant;
-use symspell::{SymSpell, UnicodeStringStrategy, Verbosity};
+use fast_symspell::{SymSpell, UnicodeStringStrategy, Verbosity};
 
 fn main() {
     let mut symspell: SymSpell<UnicodeStringStrategy> = SymSpell::default();
@@ -31,7 +31,7 @@ fn main() {
 
 pub fn measure<F>(name: &str, mut f: F)
 where
-    F: FnMut() -> (),
+    F: FnMut(),
 {
     let now = Instant::now();
     f();

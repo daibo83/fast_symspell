@@ -22,7 +22,7 @@ pub enum Verbosity {
     All,
 }
 
-#[derive(Builder, PartialEq)]
+#[derive(Clone, Builder, PartialEq)]
 pub struct SymSpell<T: StringStrategy> {
     /// Maximum edit distance for doing lookups.
     #[builder(default = "3")]
@@ -152,7 +152,7 @@ impl<T: StringStrategy> SymSpell<T> {
                 eprintln!("progress: {}", i);
             }
             let line_str = line.unwrap();
-            self.load_bigram_dictionary_line(&line_str, term_index, count_index, &separator);
+            self.load_bigram_dictionary_line(&line_str, term_index, count_index, separator);
         }
         true
     }
@@ -195,7 +195,7 @@ impl<T: StringStrategy> SymSpell<T> {
     }
 	///Find frequency of a word in the dictionary
 	pub fn get_freq(&self, input: &str)-> Option<&i64>{
-		return self.words.get(input);
+		self.words.get(input)
 	}
 
     /// Find suggested spellings for a given input word, using the maximum
@@ -284,8 +284,8 @@ impl<T: StringStrategy> SymSpell<T> {
                 break;
             }
 
-            if self.deletes.contains_key(&self.get_string_hash(&candidate)) {
-                let dict_suggestions = &self.deletes[&self.get_string_hash(&candidate)];
+            if self.deletes.contains_key(&self.get_string_hash(candidate)) {
+                let dict_suggestions = &self.deletes[&self.get_string_hash(candidate)];
 
                 for suggestion in dict_suggestions {
                     let suggestion_len = self.string_strategy.len(suggestion) as i64;
@@ -537,7 +537,7 @@ impl<T: StringStrategy> SymSpell<T> {
                                     distance2 = edit_distance_max + 1;
                                 }
 
-                                if suggestion_split_best.term != "" {
+                                if !suggestion_split_best.term.is_empty() {
                                     if distance2 > suggestion_split_best.distance {
                                         continue;
                                     }
@@ -607,7 +607,7 @@ impl<T: StringStrategy> SymSpell<T> {
                                 suggestion_split.count = count2;
 
                                 //early termination of split
-                                if suggestion_split_best.term == ""
+                                if suggestion_split_best.term.is_empty()
                                     || suggestion_split.count > suggestion_split_best.count
                                 {
                                     suggestion_split_best = suggestion_split.clone();
@@ -616,7 +616,7 @@ impl<T: StringStrategy> SymSpell<T> {
                         }
                     }
 
-                    if suggestion_split_best.term != "" {
+                    if !suggestion_split_best.term.is_empty() {
                         //select best suggestion for split pair
                         suggestion_parts.push(suggestion_split_best.clone());
                     } else {
@@ -651,7 +651,7 @@ impl<T: StringStrategy> SymSpell<T> {
         let mut s = "".to_string();
         for si in suggestion_parts {
             s.push_str(&si.term);
-            s.push_str(" ");
+            s.push(' ');
             tmp_count *= si.count as f64 / self.corpus_word_count as f64;
         }
 
